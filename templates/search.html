@@ -1,0 +1,117 @@
+{% extends 'site-base.html' %}
+{% block title %}Search Ticketmaster{% endblock %}
+{% block url %}{% url 'search' %}{% endblock %}
+{% block content %}
+<div class="container-fluid text-dark bg-light ld">
+    <div class="container pt-5 pb-2">
+        <div class="text-center">
+            <h1 class="display-2 mt-4">TicketTurbo</h1>
+            <h2 class="mb-5">Find nearby events and leave your thoughts!</h2>
+            <form action="{% url 'search' %}" method="post">
+                <div class="input-group">
+                    {% csrf_token %}
+                    <input class="form-control fs-4" list="datalistOptions" name="genre" id="genre" placeholder="Enter a genre">
+                    <datalist id="datalistOptions">
+                        <option value="Music">
+                        <option value="Sports">
+                        <option value="Theater">
+                        <option value="Family">
+                        <option value="Arts & Theater">
+                        <option value="Concerts"></option>
+                        <option value="Family"></option>
+                        <option value="Dance"></option>
+                    </datalist>
+                    <input type="text" class="form-control fs-4" placeholder="Enter a city" name="city" id="city">
+                    <button role="button" id="search" class="btn btn-primary fs-4">Search</button>
+                </div>
+            </form>
+        </div>
+        <div id="warning-cont">
+
+        </div>
+    </div>
+</div>
+<div id="results" class="container mt-3 ld-s">
+    {% for result in results %}
+        <div id="eventId" class="card mb-3 shadow">
+            <div class="row">
+                <div class="col-lg-3 my-auto">
+                    <img src="{{ result.photo }}" alt="cool guy" class="img img-fluid w-100 rounded">
+                </div>
+                <div class="col-lg-4 col-md-6">
+                    <div class="card-body">
+                        <h3>{{ result.actName }}</h3>
+                        <p class="text-secondary">
+                            <span class="fs-5"><i class="bi bi-geo-alt-fill"></i> {{ result.location }}<br></span>
+                            {{ result.address }}<br>
+                            {{ result.city }} {{ result.stateCode }}
+                        </p>
+                    </div>
+                    <hr class="d-md-none">
+                </div>
+
+                <div class="col-lg-3 col-md-6">
+                    <div class="card-body">
+                        <p>
+                            {% if result.dateString != ''%}
+                                <span class="bluetext"><span class="fs-5">{{ result.dateString }}</span></span><br>{% endif %}
+                            {% if result.timeString != '' %}
+                            <span class="bluetext">{{ result.timeString }}<br></span>{% endif %}
+                            <a role="button" target="_blank" href="{{ result.tix }}" class="btn btn-primary"><i class="bi bi-ticket-perforated-fill"></i> Find Tickets</a>
+                            <br>
+                            {% if result.liked %}
+                                <button id="likeButton-{{ result.eventId }}" onclick="like({{ forloop.counter0 }}, '{{ result.eventId }}', {{ result.likes }}, 1)" class="btn btn-danger mt-2"><i class="bi bi-heart-fill"></i>{% if result.likes > 0 %} {{ result.likes }}{% endif %}</button>
+                            {% else %}
+                                <button id="likeButton-{{ result.eventId }}" onclick="like({{ forloop.counter0 }}, '{{ result.eventId }}', {{ result.likes }}, 0)" class="btn btn-outline-danger mt-2"><i class="bi bi-heart"></i> {% if result.likes > 0 %} {{ result.likes }}{% endif %}</button>
+                            {% endif %} <a href="{% url 'event_view' result.eventId %}" class="btn btn-success mt-2">View Event Page</a>
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    {% endfor %}
+</div>
+{% endblock %}
+{% block script %}
+{{ results|json_script:"results-json" }}
+<script>
+    function like(index, event, likes, unliked) {
+        const results = JSON.parse(document.getElementById('results-json').textContent);
+        likeToSend=event;
+        if(unliked>0) likes--;
+        console.log(event);
+    $.ajax({
+        url: '{% url 'likeEvent' %}',
+        type: 'POST',
+        data: {
+            event_id: likeToSend,
+            actName: results[index]['actName'],
+            location: results[index]['location'],
+            address: results[index]['address'],
+            city: results[index]['city'],
+            state: results[index]['state'],
+            photo: results[index]['photo'],
+            dateString: results[index]['dateString'],
+            timeString: results[index]['timeString'],
+            link: results[index]['tix'],
+            csrfmiddlewaretoken: '{{ csrf_token }}'
+        },
+        success: function (response) {
+            console.log(response);
+            if (response.liked) {
+                button = $('#likeButton-' + event);
+                button.html('<i class="bi bi-heart-fill"></i> ' + ++likes);
+                button.removeClass('btn-outline-danger');
+                button.addClass('btn-danger');
+            }
+            else if(response.message === 'Successfully unliked'){
+                button = $('#likeButton-' + event);
+                button.html('<i class="bi bi-heart"></i> ' + likes);
+                button.removeClass('btn-danger');
+                button.addClass('btn-outline-danger');
+            }
+        }
+    });
+}
+</script>
+{% endblock %}

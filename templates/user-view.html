@@ -1,0 +1,46 @@
+{% extends 'site-base.html' %}
+{% block title %}{{ user_query.username }}{% endblock %}
+{% block url %}{% url 'user_view' user_id %}{% endblock %}
+{% block content %}
+    <div class=" text-center container-fluid bg-light text-dark ld">
+        <div class="container pb-3 pt-5 mt-3">
+            <h1 class="display-1">User {{ user_query.username }}</h1>
+        </div>
+    </div>
+    <div class="container mt-2">
+    <div class="row">
+        <div class="col-md-6"><h2>Likes</h2>
+            {% if liked == 'yes'%}
+                {% for like in likes %}
+                    <div class="container border border-dark-subtle shadow-lg p-3 rounded mb-4 row">
+                        <div class="col-lg-6">
+                            <img src="{{ like.photo }}" alt="" class="img-fluid">
+                        </div>
+                        <div class="col-lg-6">
+                            <h3>{{ like.actName }}</h3><br>
+                            <p>{{ like.location }}<br>
+                            <a href="{% url 'event_view' like.eventId %}">Click here to view!</a></p>
+                        </div>
+                    </div>
+                {% endfor %}
+            {% endif %}
+        </div>
+        <div class="col-md-6"><h2>Comments</h2>
+            {% if commented == 'yes'%}
+                {% for comment in comments %}
+                    <div class="container border border-dark-subtle shadow-lg p-3 rounded mb-4 row">
+                        <div class="col-lg-6">
+                            <h3>Comment On {{ comment.actName }}</h3><br>
+                            <p>{{ comment.location }}</p>
+                        </div>
+                        <div class="col-lg-6">
+                            <p>{{ comment.comment }}<br>
+                                <a href="{% url 'event_view' comment.eventId %}">Click here to view!</a></p>
+                        </div>
+                    </div>
+                {% endfor %}
+            {% endif %}
+        </div>
+    </div>
+    </div>
+{% endblock %}

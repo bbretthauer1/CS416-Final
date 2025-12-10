@@ -1,0 +1,22 @@
+{% extends 'site-base.html' %}
+{% load crispy_forms_tags %}
+{% block url %}{% url 'comment_edit' event_id %}{% endblock %}
+{% block content %}
+    {% for error in form.errors.items %}
+        <div class="bg-danger">
+            <p>{{ error }}</p>
+        </div>
+    {% endfor %}
+    <div class="container-fluid bg-light ld">
+        <div class="container text-center py-3">
+            <h2 class="display-2">Edit your Comment!</h2>
+        </div>
+    </div>
+<div class="container mt-2 ld-s">
+    <form method="post" action="{% url 'comment_edit' event_id %}">
+    {% csrf_token %}
+    {{ form|crispy }}
+    <input type="submit" value="Submit" class="btn btn-primary">
+</form>
+</div>
+{% endblock %}

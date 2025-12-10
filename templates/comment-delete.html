@@ -1,0 +1,17 @@
+{% extends 'site-base.html' %}
+{% block title %}Are you Sure?{% endblock %}
+{% block url %}{% url 'comment_delete' event_id %}{% endblock %}
+{% block content %}
+    <div class="container-fluid bg-light ld">
+        <div class="text-center">
+            <h1 class="display-2 mt-4">Delete Comment</h1>
+        </div>
+    </div>
+    <div class="container mt-2 text-center d-inline ld-s">
+        <p class="lead">Are you sure?</p>
+        <form action="{% url 'comment_delete' event_id %}" method="post">
+            {% csrf_token %}
+            <input type="submit" class='btn btn-lg btn-danger' value="Delete Comment"> <a href="{% url 'event_view' event_id %}" class="btn btn-info btn-lg">No</a>
+        </form>
+    </div>
+{% endblock %}

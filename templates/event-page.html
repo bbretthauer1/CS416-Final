@@ -1,0 +1,45 @@
+{% extends 'site-base.html' %}
+{% block title %}{{ event.actName }}{% endblock %}
+{% block url %}{% url 'event_view' event_id %}{% endblock %}
+{% block content %}
+    <div class="text-center text-dark bg-light container-fluid ld">
+        <div class="container pt-5 pb-4 mb-2">
+            <h1 class="display-1">{{ event.actName }}</h1>
+            <p class="lead">Catch this event live!</p>
+        </div>
+    </div>
+    <div class="container border border-dark-subtle shadow-lg p-3 rounded mb-3 ld-s">
+        <div class="row">
+            <div class="col-md-4">
+                <img src="{{ event.photo }}" alt="" class="img-fluid w-100">
+            </div>
+            <div class="col-md-8">
+                <div class="border border-dark-subtle rounded p-3">
+                    <span class="fs-3">{{ event.location }}</span><hr>
+                    <span class="fs-5">
+                        {{ event.address }}<br>
+                        {{ event.city }}, {{ event.stateCode }}
+                    </span><hr>
+                    <span class="fs-6">
+                        {{ event.dateString }}, {{ event.timeString }}
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="container">
+        <div class="row">
+            <div class="col-6"><h2 class="display-4">Comments:</h2></div>
+            <div class="col-6 text-end my-auto"><a href="{% url 'comment_view' event_id %}" class="btn btn-primary">Add Comment</a></div>
+        </div>
+        {% for comment in comments %}
+            <div class="border border-dark-subtle shadow-lg p-3 rounded mb-3">
+                <h3 class="display-5"><a href="{% url 'user_view' comment.user_id %}">{{ comment.user.get_username }}</a></h3>
+                <p>{{ comment.comment }}</p>
+                {% if comment.user == user %}
+                    <a href="{% url 'comment_edit' event_id %}" class="btn btn-info">Edit Comment</a> <a href="{% url 'comment_delete' event_id %}" class="btn btn-danger">Delete Comment</a>
+                {% endif %}
+            </div>
+        {% endfor %}
+    </div>
+{% endblock %}

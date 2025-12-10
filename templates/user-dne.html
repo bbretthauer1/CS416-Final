@@ -1,0 +1,11 @@
+{% extends 'site-base.html' %}
+{% block title %}User Does Not Exist{% endblock %}
+{% block url %}{% url 'user_dne' user_id %}{% endblock %}
+{% block content %}
+    <div class="container-fluid text-dark bg-light py-3 ld">
+        <div class="container text-center"><h1 class="display-1">User Does Not Exist</h1></div>
+    </div>
+    <div class="container">
+        <p class="lead">User {{ user_id }} does not exist. <a href="{% url 'search' %}">Return to search page</a></p>
+    </div>
+{% endblock %}
