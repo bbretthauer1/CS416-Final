@@ -364,7 +364,7 @@ def user_view(request, user_id):
             }
             likes.append(like)
         liked = 'yes'
-    context = {'user_query':user, 'comments':comments, 'commented':commented, 'likes':likes, 'liked':liked}
+    context = {'user_query':user, 'comments':comments, 'commented':commented, 'likes':likes, 'liked':liked, 'user_id':user_id}
     return render(request, 'user-view.html', context)
 
 def event_dne(request, event_id):
