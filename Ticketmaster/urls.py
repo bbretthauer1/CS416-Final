@@ -2,7 +2,7 @@ from django.urls import *
 from Ticketmaster import views
 
 urlpatterns = [
-    path("search/", views.search, name="search"),
+    path("", views.search, name="search"),
     path("accounts/", views.createaccount, name="createaccount"),
     path("login/", views.login_view, name="login_view"),
     path('like/', views.likeEvent, name="likeEvent"),
